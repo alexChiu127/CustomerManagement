@@ -11,6 +11,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="客戶名稱" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="客戶分類" Type="nvarchar" MaxLength="30" />
           <Property Name="統一編號" Type="char" MaxLength="8" Nullable="false" />
           <Property Name="電話" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="傳真" Type="nvarchar" MaxLength="50" />
@@ -119,6 +120,7 @@
           <NavigationProperty Name="客戶銀行資訊" Relationship="Self.FK_客戶銀行資訊_客戶資料" FromRole="客戶資料" ToRole="客戶銀行資訊" />
           <NavigationProperty Name="客戶聯絡人" Relationship="Self.FK_客戶聯絡人_客戶資料" FromRole="客戶資料" ToRole="客戶聯絡人" />
           <Property Name="是否已刪除" Type="Boolean" Nullable="false" />
+          <Property Name="客戶分類" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="客戶銀行資訊">
           <Key>
@@ -205,6 +207,7 @@
           <EntitySetMapping Name="客戶資料">
             <EntityTypeMapping TypeName="客戶資料Model.客戶資料">
               <MappingFragment StoreEntitySet="客戶資料">
+                <ScalarProperty Name="客戶分類" ColumnName="客戶分類" />
                 <ScalarProperty Name="是否已刪除" ColumnName="是否已刪除" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="客戶名稱" ColumnName="客戶名稱" />
