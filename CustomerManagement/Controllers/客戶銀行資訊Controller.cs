@@ -21,7 +21,7 @@ namespace CustomerManagement.Controllers
             var model = new CustomerBankInfoListViewModel
             {
                 SearchParameter = new SearchParameterViewModel(),
-                CustomerBankInfo = db.客戶銀行資訊.Include(客 => 客.客戶資料).OrderBy(x => x.銀行名稱)
+                CustomerBankInfo = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).OrderBy(x => x.銀行名稱)
             };
 
             return View(model);
@@ -31,7 +31,7 @@ namespace CustomerManagement.Controllers
         [HttpPost]
         public ActionResult Index(CustomerBankInfoListViewModel model)
         {
-            var query = db.客戶銀行資訊.Include(客 => 客.客戶資料).AsQueryable();
+            var query = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(model.SearchParameter.帳戶名稱))
             {
@@ -160,7 +160,9 @@ namespace CustomerManagement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            db.客戶銀行資訊.Remove(客戶銀行資訊);
+            //db.客戶銀行資訊.Remove(客戶銀行資訊);
+            客戶銀行資訊.是否已刪除 = true;
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }

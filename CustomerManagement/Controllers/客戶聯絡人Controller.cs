@@ -22,7 +22,7 @@ namespace CustomerManagement.Controllers
             var model = new CustomerContactListViewModel
             {
                 SearchParameter = new SearchParameterViewModel(),
-                CustomerContacts = db.客戶聯絡人.Include(客 => 客.客戶資料).OrderBy(x => x.姓名)
+                CustomerContacts = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).OrderBy(x => x.姓名)
             };
 
             return View(model);
@@ -32,7 +32,7 @@ namespace CustomerManagement.Controllers
         [HttpPost]
         public ActionResult Index(CustomerContactListViewModel model)
         {
-            var query = db.客戶聯絡人.Include(客 => 客.客戶資料).AsQueryable();
+            var query = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(model.SearchParameter.聯絡人姓名))
             {
@@ -161,7 +161,8 @@ namespace CustomerManagement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            db.客戶聯絡人.Remove(客戶聯絡人);
+            //db.客戶聯絡人.Remove(客戶聯絡人);
+            客戶聯絡人.是否已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
