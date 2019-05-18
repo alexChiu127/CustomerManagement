@@ -1,5 +1,6 @@
 namespace CustomerManagement.Models
 {
+    using CustomerManagement.DataTypeAttributes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -43,6 +44,7 @@ namespace CustomerManagement.Models
         public string Email { get; set; }
         
         [StringLength(50, ErrorMessage="欄位長度不得大於 50 個字元")]
+        [驗證手機電話格式]
         public string 手機 { get; set; }
         
         [StringLength(50, ErrorMessage="欄位長度不得大於 50 個字元")]
