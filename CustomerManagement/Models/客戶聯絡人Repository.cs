@@ -17,6 +17,11 @@ namespace CustomerManagement.Models
             return this.All().Where(c => c.Id == id).FirstOrDefault();
         }
 
+        public IQueryable<string> FindContactEmailsByCustomerId(int customerId)
+        {
+            return this.All().Where(c => c.客戶Id == customerId).Select(c => c.Email);
+        }
+
         public override void Delete(客戶聯絡人 entity)
         {
             entity.是否已刪除 = true;

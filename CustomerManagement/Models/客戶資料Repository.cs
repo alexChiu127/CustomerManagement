@@ -47,6 +47,11 @@ namespace CustomerManagement.Models
             return this.All().Where(c => c.Id == id).FirstOrDefault();
         }
 
+        public 客戶資料 Find(string customerName)
+        {
+            return this.All().Where(c => c.客戶名稱 == customerName).FirstOrDefault();
+        }
+
         public override void Delete(客戶資料 entity)
         {
             entity.是否已刪除 = true;

@@ -22,6 +22,9 @@
         <th>
             @Html.DisplayNameFor(model => model.銀行帳戶數量)
         </th>
+        <th>
+            Function
+        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -32,6 +35,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.聯絡人數量)
+                <button data-customerName='@item.客戶名稱' class="btn btn-xs btn-default btnShowContactEmails">Show Contact Emails</button>
+                <ul class="contactEmailResult">
+                </ul>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.銀行帳戶數量)
@@ -40,3 +46,33 @@
     }
 
 </table>
+@section scripts {
+    <script>
+        $(function () {
+            $('.btnShowContactEmails').on("click", function () {
+                $currentBtn = $(this);
+                $currentBtn.next().html('');
+                $.ajax
+                    ({
+                        type: "Get",
+                        dataType: "json",
+                        url: "/Home/GetContactEmails",
+                        data: { customerName: $(this).attr("data-customerName")},
+                        async: false,
+                        success: function (redata) {
+                            if (redata.err) {
+                                alert(redata.err);
+                            }
+                            else {                                
+                                $.each(redata, function (index, item) {
+                                    $currentBtn.next().append("<li>" + item + "</li>");
+                                });
+                            }
+                        }
+                    });
+            });
+
+
+        });
+    </script>
+}
