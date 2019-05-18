@@ -41,30 +41,37 @@ namespace CustomerManagement.Controllers
         public ActionResult Index(CustomerListViewModel model)
         {
             //var query = db.客戶資料.Where(c => c.是否已刪除 == false).AsQueryable();
-            var query = customerRepo.All();
+            //var query = customerRepo.All();
 
-            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶名稱))
-            {
-                query = query.Where(
-                    x => x.客戶名稱.Contains(model.SearchParameter.客戶名稱));
-            }
-            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶統一編號))
-            {
-                query = query.Where(
-                    x => x.統一編號.Contains(model.SearchParameter.客戶統一編號));
-            }
-            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶Email))
-            {
-                query = query.Where(
-                    x => x.Email.Contains(model.SearchParameter.客戶Email));
-            }
-            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶電話))
-            {
-                query = query.Where(
-                    x => x.電話.Contains(model.SearchParameter.客戶電話));
-            }
+            //if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶名稱))
+            //{
+            //    query = query.Where(
+            //        x => x.客戶名稱.Contains(model.SearchParameter.客戶名稱));
+            //}
+            //if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶統一編號))
+            //{
+            //    query = query.Where(
+            //        x => x.統一編號.Contains(model.SearchParameter.客戶統一編號));
+            //}
+            //if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶Email))
+            //{
+            //    query = query.Where(
+            //        x => x.Email.Contains(model.SearchParameter.客戶Email));
+            //}
+            //if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶電話))
+            //{
+            //    query = query.Where(
+            //        x => x.電話.Contains(model.SearchParameter.客戶電話));
+            //}
+            //if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶分類))
+            //{
+            //    query = query.Where(
+            //        x => x.客戶分類.Contains(model.SearchParameter.客戶分類));
+            //}
 
-            query = query.OrderBy(x => x.客戶名稱);
+            var query = customerRepo.Filter(
+                model.SearchParameter.客戶名稱, model.SearchParameter.客戶統一編號, model.SearchParameter.客戶Email,
+                model.SearchParameter.客戶電話, model.SearchParameter.客戶分類);
 
 
             var result = new CustomerListViewModel

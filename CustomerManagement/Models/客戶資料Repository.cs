@@ -11,6 +11,37 @@ namespace CustomerManagement.Models
             return base.All().Where(c => c.是否已刪除 == false).OrderBy(x => x.客戶名稱); 
         }
 
+        public IQueryable<客戶資料> Filter(string 客戶名稱, string 客戶統一編號, string 客戶Email, string 客戶電話, string 客戶分類)
+        {
+            var query = this.All();
+            if (!string.IsNullOrWhiteSpace(客戶名稱))
+            {
+                query = query.Where(
+                    x => x.客戶名稱.Contains(客戶名稱));
+            }
+            if (!string.IsNullOrWhiteSpace(客戶統一編號))
+            {
+                query = query.Where(
+                    x => x.統一編號.Contains(客戶統一編號));
+            }
+            if (!string.IsNullOrWhiteSpace(客戶Email))
+            {
+                query = query.Where(
+                    x => x.Email.Contains(客戶Email));
+            }
+            if (!string.IsNullOrWhiteSpace(客戶電話))
+            {
+                query = query.Where(
+                    x => x.電話.Contains(客戶電話));
+            }
+            if (!string.IsNullOrWhiteSpace(客戶分類))
+            {
+                query = query.Where(
+                    x => x.客戶分類.Contains(客戶分類));
+            }
+            return query.OrderBy(x => x.客戶名稱);
+        }
+
         public 客戶資料 Find(int id)
         {
             return this.All().Where(c => c.Id == id).FirstOrDefault();

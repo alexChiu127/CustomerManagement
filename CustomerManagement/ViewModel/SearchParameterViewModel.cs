@@ -15,6 +15,8 @@ namespace CustomerManagement.ViewModel
 
         public string 客戶電話 { get; set; }
 
+        public string 客戶分類 { get; set; }
+
         public string 聯絡人姓名 { get; set; }
 
         public string 聯絡人職稱 { get; set; }
