@@ -49,8 +49,10 @@
         <EntityType Name="客戶管理清單">
           <Key>
             <PropertyRef Name="客戶名稱" />
+            <PropertyRef Name="是否已刪除" />
           </Key>
           <Property Name="客戶名稱" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="是否已刪除" Type="bit" Nullable="false" />
           <Property Name="聯絡人數量" Type="int" />
           <Property Name="銀行帳戶數量" Type="int" />
         </EntityType>
@@ -85,6 +87,7 @@
           <EntitySet Name="客戶管理清單" EntityType="Self.客戶管理清單" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [客戶管理清單].[客戶名稱] AS [客戶名稱], 
+    [客戶管理清單].[是否已刪除] AS [是否已刪除], 
     [客戶管理清單].[聯絡人數量] AS [聯絡人數量], 
     [客戶管理清單].[銀行帳戶數量] AS [銀行帳戶數量]
     FROM [dbo].[客戶管理清單] AS [客戶管理清單]</DefiningQuery>
@@ -186,8 +189,10 @@
         <EntityType Name="客戶管理清單">
           <Key>
             <PropertyRef Name="客戶名稱" />
+            <PropertyRef Name="是否已刪除" />
           </Key>
           <Property Name="客戶名稱" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="是否已刪除" Type="Boolean" Nullable="false" />
           <Property Name="聯絡人數量" Type="Int32" />
           <Property Name="銀行帳戶數量" Type="Int32" />
         </EntityType>
@@ -244,6 +249,7 @@
               <MappingFragment StoreEntitySet="客戶管理清單">
                 <ScalarProperty Name="銀行帳戶數量" ColumnName="銀行帳戶數量" />
                 <ScalarProperty Name="聯絡人數量" ColumnName="聯絡人數量" />
+                <ScalarProperty Name="是否已刪除" ColumnName="是否已刪除" />
                 <ScalarProperty Name="客戶名稱" ColumnName="客戶名稱" />
               </MappingFragment>
             </EntityTypeMapping>

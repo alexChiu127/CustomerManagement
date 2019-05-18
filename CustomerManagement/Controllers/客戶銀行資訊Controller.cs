@@ -13,7 +13,17 @@ namespace CustomerManagement.Controllers
 {
     public class 客戶銀行資訊Controller : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        //private 客戶資料Entities db = new 客戶資料Entities();
+
+        private 客戶銀行資訊Repository customerBankInfoRepo;
+        private 客戶資料Repository customerRepo;
+
+        public 客戶銀行資訊Controller()
+        {
+            var unitOfWork = new EFUnitOfWork();
+            customerBankInfoRepo = RepositoryHelper.Get客戶銀行資訊Repository(unitOfWork);
+            customerRepo = RepositoryHelper.Get客戶資料Repository(unitOfWork);
+        }
 
         // GET: 客戶銀行資訊
         public ActionResult Index()
@@ -21,8 +31,9 @@ namespace CustomerManagement.Controllers
             var model = new CustomerBankInfoListViewModel
             {
                 SearchParameter = new SearchParameterViewModel(),
-                CustomerBankInfo = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).OrderBy(x => x.銀行名稱)
-            };
+                //CustomerBankInfo = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).OrderBy(x => x.銀行名稱)
+                CustomerBankInfo = customerBankInfoRepo.All()
+        };
 
             return View(model);
         }
@@ -31,8 +42,8 @@ namespace CustomerManagement.Controllers
         [HttpPost]
         public ActionResult Index(CustomerBankInfoListViewModel model)
         {
-            var query = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).AsQueryable();
-
+            //var query = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).AsQueryable();
+            var query = customerBankInfoRepo.All();
             if (!string.IsNullOrWhiteSpace(model.SearchParameter.帳戶名稱))
             {
                 query = query.Where(
@@ -73,7 +84,9 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            //客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = customerBankInfoRepo.Find(id.Value);
+
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -84,7 +97,8 @@ namespace CustomerManagement.Controllers
         // GET: 客戶銀行資訊/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            //ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(customerRepo.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -97,12 +111,16 @@ namespace CustomerManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶銀行資訊.Add(客戶銀行資訊);
-                db.SaveChanges();
+                //db.客戶銀行資訊.Add(客戶銀行資訊);
+                //db.SaveChanges();
+                customerBankInfoRepo.Add(客戶銀行資訊);
+                customerBankInfoRepo.UnitOfWork.Commit();
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            //ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(customerRepo.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -113,12 +131,14 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            //客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = customerBankInfoRepo.Find(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            //ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(customerRepo.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -131,11 +151,15 @@ namespace CustomerManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(客戶銀行資訊).State = EntityState.Modified;
-                db.SaveChanges();
+                //db.Entry(客戶銀行資訊).State = EntityState.Modified;
+                //db.SaveChanges();
+
+                customerBankInfoRepo.Add(客戶銀行資訊);
+                customerBankInfoRepo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            //ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(customerRepo.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -146,7 +170,8 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            //客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = customerBankInfoRepo.Find(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -159,11 +184,15 @@ namespace CustomerManagement.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            //客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = customerBankInfoRepo.Find(id);
             //db.客戶銀行資訊.Remove(客戶銀行資訊);
-            客戶銀行資訊.是否已刪除 = true;
+            //客戶銀行資訊.是否已刪除 = true;
 
-            db.SaveChanges();
+            //db.SaveChanges();
+
+            customerBankInfoRepo.Delete(客戶銀行資訊);
+            customerRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
@@ -171,7 +200,8 @@ namespace CustomerManagement.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
+                customerRepo.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }

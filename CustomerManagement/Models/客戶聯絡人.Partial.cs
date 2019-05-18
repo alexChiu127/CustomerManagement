@@ -15,9 +15,9 @@ namespace CustomerManagement.Models
 
             foreach (var contact in relatedCustomer.客戶聯絡人)
             {
-                if(contact.是否已刪除 == false && contact.Email == this.Email)
-                yield return new ValidationResult("此聯絡人Email已經存在",
-                    new string[] { "Email" });
+                if(contact.Id != this.Id && contact.是否已刪除 == false && contact.Email == this.Email)
+                    yield return new ValidationResult("此聯絡人Email已經存在",
+                        new string[] { "Email" });
             }
         }
     }

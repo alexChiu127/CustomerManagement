@@ -13,7 +13,15 @@ namespace CustomerManagement.Controllers
 {
     public class 客戶資料Controller : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        //private 客戶資料Entities db = new 客戶資料Entities();
+
+        private 客戶資料Repository customerRepo;
+
+        public 客戶資料Controller()
+        {
+            var unitOfWork = new EFUnitOfWork();
+            customerRepo = RepositoryHelper.Get客戶資料Repository(unitOfWork);
+        }
 
         // GET: 客戶資料
         public ActionResult Index()
@@ -21,7 +29,8 @@ namespace CustomerManagement.Controllers
             var model = new CustomerListViewModel
             {
                 SearchParameter = new SearchParameterViewModel(),
-                Customers = db.客戶資料.Where(c => c.是否已刪除 == false).OrderBy(x => x.客戶名稱)
+                //Customers = db.客戶資料.Where(c => c.是否已刪除 == false).OrderBy(x => x.客戶名稱)
+                Customers = customerRepo.All()
             };
 
             return View(model);
@@ -31,7 +40,8 @@ namespace CustomerManagement.Controllers
         [HttpPost]
         public ActionResult Index(CustomerListViewModel model)
         {
-            var query = db.客戶資料.Where(c => c.是否已刪除 == false).AsQueryable();
+            //var query = db.客戶資料.Where(c => c.是否已刪除 == false).AsQueryable();
+            var query = customerRepo.All();
 
             if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶名稱))
             {
@@ -73,7 +83,9 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+
+            客戶資料 客戶資料 = customerRepo.Find(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -96,8 +108,11 @@ namespace CustomerManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶資料.Add(客戶資料);
-                db.SaveChanges();
+                //db.客戶資料.Add(客戶資料);
+                //db.SaveChanges();
+
+                customerRepo.Add(客戶資料);
+                customerRepo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -111,7 +126,8 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = customerRepo.Find(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -128,9 +144,12 @@ namespace CustomerManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(客戶資料).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                //db.Entry(客戶資料).State = EntityState.Modified;
+                //db.SaveChanges();
+
+                customerRepo.UnitOfWork.Context.Entry(客戶資料).State = EntityState.Modified;
+                customerRepo.UnitOfWork.Commit();
+
             }
             return View(客戶資料);
         }
@@ -142,7 +161,8 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = customerRepo.Find(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -155,18 +175,21 @@ namespace CustomerManagement.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = customerRepo.Find(id);
             //db.客戶資料.Remove(客戶資料);
-            客戶資料.是否已刪除 = true;
-            foreach(var contact in 客戶資料.客戶聯絡人)
-            {
-                contact.是否已刪除 = true;
-            }
-            foreach (var bankInfo in 客戶資料.客戶銀行資訊)
-            {
-                bankInfo.是否已刪除 = true;
-            }
-            db.SaveChanges();
+            //客戶資料.是否已刪除 = true;
+            //foreach(var contact in 客戶資料.客戶聯絡人)
+            //{
+            //    contact.是否已刪除 = true;
+            //}
+            //foreach (var bankInfo in 客戶資料.客戶銀行資訊)
+            //{
+            //    bankInfo.是否已刪除 = true;
+            //}
+            //db.SaveChanges();
+            customerRepo.Delete(客戶資料);
+            customerRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
@@ -174,7 +197,8 @@ namespace CustomerManagement.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
+                customerRepo.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }
