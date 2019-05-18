@@ -172,6 +172,10 @@
       <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\CustomerBankInfoListViewModel.cs" />
+    <Compile Include="ViewModel\CustomerContactListViewModel.cs" />
+    <Compile Include="ViewModel\CustomerListViewModel.cs" />
+    <Compile Include="ViewModel\SearchParameterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

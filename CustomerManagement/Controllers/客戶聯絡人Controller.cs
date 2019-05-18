@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
+using CustomerManagement.ViewModel;
 
 namespace CustomerManagement.Controllers
 {
@@ -14,11 +15,56 @@ namespace CustomerManagement.Controllers
     {
         private 客戶資料Entities db = new 客戶資料Entities();
 
+
         // GET: 客戶聯絡人
         public ActionResult Index()
         {
-            var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-            return View(客戶聯絡人.ToList());
+            var model = new CustomerContactListViewModel
+            {
+                SearchParameter = new SearchParameterViewModel(),
+                CustomerContacts = db.客戶聯絡人.Include(客 => 客.客戶資料).OrderBy(x => x.姓名)
+            };
+
+            return View(model);
+        }
+
+        // POST: 客戶資料
+        [HttpPost]
+        public ActionResult Index(CustomerContactListViewModel model)
+        {
+            var query = db.客戶聯絡人.Include(客 => 客.客戶資料).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.聯絡人姓名))
+            {
+                query = query.Where(
+                    x => x.姓名.Contains(model.SearchParameter.聯絡人姓名));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.聯絡人職稱))
+            {
+                query = query.Where(
+                    x => x.職稱.Contains(model.SearchParameter.聯絡人職稱));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.聯絡人Email))
+            {
+                query = query.Where(
+                    x => x.Email.Contains(model.SearchParameter.聯絡人Email));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.聯絡人手機))
+            {
+                query = query.Where(
+                    x => x.手機.Contains(model.SearchParameter.聯絡人手機));
+            }
+
+            query = query.OrderBy(x => x.姓名);
+
+
+            var result = new CustomerContactListViewModel
+            {
+                SearchParameter = model.SearchParameter,
+                CustomerContacts = query
+            };
+
+            return View(result);
         }
 
         // GET: 客戶聯絡人/Details/5

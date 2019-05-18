@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
+using CustomerManagement.ViewModel;
 
 namespace CustomerManagement.Controllers
 {
@@ -17,7 +18,52 @@ namespace CustomerManagement.Controllers
         // GET: 客戶資料
         public ActionResult Index()
         {
-            return View(db.客戶資料.ToList());
+            var model = new CustomerListViewModel
+            {
+                SearchParameter = new SearchParameterViewModel(),
+                Customers = db.客戶資料.OrderBy(x => x.客戶名稱)
+            };
+
+            return View(model);
+        }
+
+        // POST: 客戶資料
+        [HttpPost]
+        public ActionResult Index(CustomerListViewModel model)
+        {
+            var query = db.客戶資料.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶名稱))
+            {
+                query = query.Where(
+                    x => x.客戶名稱.Contains(model.SearchParameter.客戶名稱));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶統一編號))
+            {
+                query = query.Where(
+                    x => x.統一編號.Contains(model.SearchParameter.客戶統一編號));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶Email))
+            {
+                query = query.Where(
+                    x => x.Email.Contains(model.SearchParameter.客戶Email));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.客戶電話))
+            {
+                query = query.Where(
+                    x => x.電話.Contains(model.SearchParameter.客戶電話));
+            }
+
+            query = query.OrderBy(x => x.客戶名稱);
+
+
+            var result = new CustomerListViewModel
+            {
+                SearchParameter = model.SearchParameter,
+                Customers = query
+            };
+
+            return View(result);
         }
 
         // GET: 客戶資料/Details/5

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
+using CustomerManagement.ViewModel;
 
 namespace CustomerManagement.Controllers
 {
@@ -17,8 +18,52 @@ namespace CustomerManagement.Controllers
         // GET: 客戶銀行資訊
         public ActionResult Index()
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
-            return View(客戶銀行資訊.ToList());
+            var model = new CustomerBankInfoListViewModel
+            {
+                SearchParameter = new SearchParameterViewModel(),
+                CustomerBankInfo = db.客戶銀行資訊.Include(客 => 客.客戶資料).OrderBy(x => x.銀行名稱)
+            };
+
+            return View(model);
+        }
+
+        // POST: 客戶銀行資訊
+        [HttpPost]
+        public ActionResult Index(CustomerBankInfoListViewModel model)
+        {
+            var query = db.客戶銀行資訊.Include(客 => 客.客戶資料).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.帳戶名稱))
+            {
+                query = query.Where(
+                    x => x.帳戶名稱.Contains(model.SearchParameter.帳戶名稱));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.帳戶號碼))
+            {
+                query = query.Where(
+                    x => x.帳戶號碼.Contains(model.SearchParameter.帳戶號碼));
+            }
+            if (!string.IsNullOrWhiteSpace(model.SearchParameter.銀行名稱))
+            {
+                query = query.Where(
+                    x => x.銀行名稱.Contains(model.SearchParameter.銀行名稱));
+            }
+            if (model.SearchParameter.銀行代碼 !=0)
+            {
+                query = query.Where(
+                    x => x.銀行代碼 == model.SearchParameter.銀行代碼);
+            }
+
+            query = query.OrderBy(x => x.銀行名稱);
+
+
+            var result = new CustomerBankInfoListViewModel
+            {
+                SearchParameter = model.SearchParameter,
+                CustomerBankInfo = query
+            };
+
+            return View(result);
         }
 
         // GET: 客戶銀行資訊/Details/5
