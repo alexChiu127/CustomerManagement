@@ -167,8 +167,9 @@ namespace CustomerManagement.Controllers
                 //db.Entry(客戶聯絡人).State = EntityState.Modified;
                 //db.SaveChanges();
 
-                customerContactRepo.Add(客戶聯絡人);
-                customerContactRepo.UnitOfWork.Commit();
+
+                customerRepo.UnitOfWork.Context.Entry(客戶聯絡人).State = EntityState.Modified;
+                customerRepo.UnitOfWork.Commit();
 
                 return RedirectToAction("Index");
             }

@@ -2,8 +2,10 @@ namespace CustomerManagement.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    
+
+    [DisplayName("客戶主檔")]
     [MetadataType(typeof(客戶資料MetaData))]
     public partial class 客戶資料
     {
