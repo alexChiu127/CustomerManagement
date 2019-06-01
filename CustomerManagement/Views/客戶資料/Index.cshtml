@@ -46,9 +46,12 @@
             <div class="col-md-6 form-group">
                 <label class="col-lg-3 control-label">客戶分類:</label>
                 <div class="col-lg-8">
-                    @Html.DropDownListFor(x => x.SearchParameter.客戶分類,
-                        new List<SelectListItem> () { new SelectListItem{ Text = "VIP", Value= "VIP" }, new SelectListItem { Text = "Normal", Value = "Normal" } },"",
-                        htmlAttributes: new { @class = "form-control" })
+
+
+                    @Html.DropDownListFor(x => x.SearchParameter.客戶分類, (IEnumerable<SelectListItem>)ViewBag.客戶分類選項, "Select...", htmlAttributes: new { @class = "form-control" })
+                    @*@Html.DropDownListFor(x => x.SearchParameter.客戶分類,
+    new List<SelectListItem> () { new SelectListItem{ Text = "VIP", Value= "VIP" }, new SelectListItem { Text = "Normal", Value = "Normal" } },"",
+    htmlAttributes: new { @class = "form-control" })*@
                 </div>
             </div>
 
@@ -63,7 +66,7 @@
         </div>
 
 
-    }
+                        }
 </div>
 <table class="table" id="CustomerDt">
     <thead>

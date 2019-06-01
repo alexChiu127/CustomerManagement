@@ -6,11 +6,13 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using CustomerManagement.ActionFilters;
 using CustomerManagement.Models;
 using CustomerManagement.ViewModel;
 
 namespace CustomerManagement.Controllers
 {
+    [取得客戶分類選項]
     public class 客戶資料Controller : Controller
     {
         //private 客戶資料Entities db = new 客戶資料Entities();
@@ -26,13 +28,26 @@ namespace CustomerManagement.Controllers
         // GET: 客戶資料
         public ActionResult Index()
         {
+
+            //ViewBag.客戶分類選項 = customerRepo.All客戶分類().Select(s => new SelectListItem { Text = s, Value = s }).ToList();
+
+
             var model = new CustomerListViewModel
             {
                 SearchParameter = new SearchParameterViewModel(),
                 //Customers = db.客戶資料.Where(c => c.是否已刪除 == false).OrderBy(x => x.客戶名稱)
-                Customers = customerRepo.All()
+                Customers = customerRepo.All(),
+                //分類選項 = 客戶分類選項
+
             };
 
+            //ViewBag.客戶分類選項 = customerRepo.All客戶分類();
+
+
+            ////SelectList list = new SelectList(
+            ////                                customerRepo.All客戶分類().Select(s => new SelectListItem { Text = s, Value = s })
+            ////                                , "Value", "Text");
+            ////ViewBag.客戶分類選項 = list;
             return View(model);
         }
 
@@ -72,8 +87,7 @@ namespace CustomerManagement.Controllers
             var query = customerRepo.Filter(
                 model.SearchParameter.客戶名稱, model.SearchParameter.客戶統一編號, model.SearchParameter.客戶Email,
                 model.SearchParameter.客戶電話, model.SearchParameter.客戶分類);
-
-
+            //ViewBag.客戶分類選項 = customerRepo.All客戶分類().Select(s => new SelectListItem { Text = s, Value = s }).ToList();
             var result = new CustomerListViewModel
             {
                 SearchParameter = model.SearchParameter,
@@ -198,6 +212,20 @@ namespace CustomerManagement.Controllers
             customerRepo.Delete(客戶資料);
             customerRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult DownloadExcelFile(bool dl = false)
+        {
+            var file = Server.MapPath("~/Content/image.jpg");
+
+            if (dl)
+            {
+                return File(file, "image/jpeg", "iamgename");
+            }
+            else
+            {
+                return File(file, "image/jpeg");
+            }
         }
 
         protected override void Dispose(bool disposing)

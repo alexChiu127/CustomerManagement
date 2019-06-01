@@ -42,6 +42,11 @@ namespace CustomerManagement.Models
             return query.OrderBy(x => x.客戶名稱);
         }
 
+        public IQueryable<string> All客戶分類()
+        {
+            return this.All().Select(c => c.客戶分類).Distinct();
+        }
+
         public 客戶資料 Find(int id)
         {
             return this.All().Where(c => c.Id == id).FirstOrDefault();

@@ -4,20 +4,36 @@ namespace CustomerManagement.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    
+    using System.Linq;
+
     [MetadataType(typeof(客戶聯絡人MetaData))]
     public partial class 客戶聯絡人 : IValidatableObject
     {
         private 客戶資料Entities db = new 客戶資料Entities();
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var relatedCustomer = db.客戶資料.Find(this.客戶Id);
+            //var relatedCustomer = db.客戶資料.Find(this.客戶Id);
 
-            foreach (var contact in relatedCustomer.客戶聯絡人)
+            //foreach (var contact in relatedCustomer.客戶聯絡人)
+            //{
+            //    if(contact.Id != this.Id && contact.是否已刪除 == false && contact.Email == this.Email)
+            //        yield return new ValidationResult("此聯絡人Email已經存在",
+            //            new string[] { "Email" });
+            //}
+
+            //改寫
+            if (this.Id == 0)//Create
             {
-                if(contact.Id != this.Id && contact.是否已刪除 == false && contact.Email == this.Email)
-                    yield return new ValidationResult("此聯絡人Email已經存在",
-                        new string[] { "Email" });
+                if(db.客戶聯絡人.Where(c => c.客戶Id == this.客戶Id && c.Email == this.Email).Any())
+                    yield return new ValidationResult("此聯絡人Email已經存在", new string[] { "Email" });
+
+
+            }
+            else
+            {
+                //要把自己排除掉
+                if(db.客戶聯絡人.Where(c => c.客戶Id == this.客戶Id && c.Id != this.Id && c.Email == this.Email).Any())
+                    yield return new ValidationResult("此聯絡人Email已經存在", new string[] { "Email" });
             }
         }
     }

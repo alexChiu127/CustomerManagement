@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace CustomerManagement.ViewModel
 {
@@ -33,5 +34,6 @@ namespace CustomerManagement.ViewModel
         public string 帳戶名稱 { get; set; }
 
         public string 帳戶號碼 { get; set; }
+
     }
 }
