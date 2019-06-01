@@ -32,7 +32,7 @@ namespace CustomerManagement.Controllers
             {
                 SearchParameter = new SearchParameterViewModel(),
                 //CustomerContacts = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).OrderBy(x => x.姓名)
-                CustomerContacts = customerContactRepo.All()
+                CustomerContacts = customerContactRepo.All().ToList()
             };
 
             return View(model);
@@ -40,7 +40,7 @@ namespace CustomerManagement.Controllers
 
         // POST: 客戶資料
         [HttpPost]
-        public ActionResult Index(CustomerContactListViewModel model)
+        public ActionResult Search(CustomerContactListViewModel model)
         {
             //var query = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).AsQueryable();
 
@@ -73,10 +73,38 @@ namespace CustomerManagement.Controllers
             var result = new CustomerContactListViewModel
             {
                 SearchParameter = model.SearchParameter,
-                CustomerContacts = query
+                CustomerContacts = query.ToList()
             };
 
-            return View(result);
+            return View("Index",result);
+        }
+
+        // POST: 客戶資料
+        [HttpPost]
+        public ActionResult Index(CustomerContactBatchUpdateViewModel[] data)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var item in data)
+                {
+                    var contact = customerContactRepo.Find(item.Id);
+                    contact.職稱 = item.職稱;
+                    contact.手機 = item.手機;
+                    contact.電話 = item.電話;
+                }
+                customerContactRepo.UnitOfWork.Commit();
+                //db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+
+            var model = new CustomerContactListViewModel
+            {
+                SearchParameter = new SearchParameterViewModel(),
+                //CustomerContacts = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(c => c.是否已刪除 == false).OrderBy(x => x.姓名)
+                CustomerContacts = customerContactRepo.All().ToList()
+            };
+            return View(model);
         }
 
         // GET: 客戶聯絡人
