@@ -68,6 +68,10 @@
 
     </dl>
 </div>
+
+<p>聯絡人清單:</p>
+@Html.Action("List", "客戶聯絡人", new { 客戶Id = Model.Id })
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")

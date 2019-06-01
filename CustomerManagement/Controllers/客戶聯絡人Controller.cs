@@ -79,6 +79,15 @@ namespace CustomerManagement.Controllers
             return View(result);
         }
 
+        // GET: 客戶聯絡人
+        [ChildActionOnly]
+        public ActionResult List(int 客戶Id)
+        {
+
+            var contacts = customerContactRepo.All().Where(p => p.客戶Id == 客戶Id);
+            return PartialView(contacts.ToList());
+        }
+
         // GET: 客戶聯絡人/Details/5
         public ActionResult Details(int? id)
         {
